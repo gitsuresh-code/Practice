@@ -1,13 +1,18 @@
 #!/bin/bash
-path="/var/log/scriptlog/"
+path="/tmp/shell"
 file=$(echo $0 | cut -d "." -f1)
 logfile="$path/$file.log"
 
 mkdir -p $path
 
-filepath=$((find . -name "*.log" -type f))
-while IFS=read $filepath 
+if [ ! -d $path ]; then
+echo "directory doesn't exist"
+
+filestodelete=$((find . -name "*.log" -type f))
+while IFS=read filepath 
 do 
        echo "Delete the file: $filepath"
        rm -rf $filepath
-done <<<$logfile
+       echo "Deleted the file: $filepath"
+       
+done <<<$filestodelete
