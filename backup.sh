@@ -14,7 +14,7 @@ destd=$2   # second argument
 days=${3:-14} # if not provided considered as 14 days
 
 
-logpath="/tmp/shell"
+logpath="/tmp/shell/applogs"
 name=$( echo $0 | cut -d "." -f1 )
 logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
