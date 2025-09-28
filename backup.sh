@@ -18,7 +18,7 @@ logpath="/tmp/shell/applogs"
 name=$( echo $0 | cut -d "." -f1 )
 logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
-echo "Script started executed at: $(date)" | tee -a $logfile
+echo "Script started executed at: $(date)" 
 
 if [ "$user" -ne 0 ]; then
     echo "ERROR:: Please run this script with root privelege"
@@ -76,13 +76,14 @@ echo "$files_found"
 
 
 # Archive logs safely
-if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0| zip -@ -j "$zipfile"; then
+if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0 | xargs -0 zip -j "$zipfile"; then
     echo -e "Archival ... $G SUCCESS $N"
 
     # Delete original files safely
-    find "$sourced" -type f -name "*.log" -mtime +"$days" -print0 | while IFS= read -r -d '' filepath; do
+    find "$sourced" -type f -name "*.log" -mtime +"$days" | while read -r filepath; do
     rm -f "$filepath"
     done
+
     echo "All old logs archived and deleted successfully."
 
 else
