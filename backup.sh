@@ -14,12 +14,15 @@ destd=$2   # second argument
 days=${3:-14} # if not provided considered as 14 days
 
 
-path="/tmp/shell"
+logpath="/tmp/shell"
 name=$( echo $0 | cut -d "." -f1 )
-logpath="$path/$name.log" # /tmp/shell/backup.log
+logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
-mkdir -p $path
-echo "Script started executed at: $(date)" | tee -a $logpath
+mkdir -p $logpath
+# Ensure destination exists
+mkdir -p "$destd"
+
+echo "Script started executed at: $(date)" | tee -a $logfile
 
 if [ "$user" -ne 0 ]; then
     echo "ERROR:: Please run this script with root privelege"
@@ -43,8 +46,7 @@ if [ ! -d "$sourced" ]; then
     exit 1 #script will end here
 fi
 
-# Ensure destination exists
-mkdir -p "$destd"
+
 
 ### Check DEST_DIR Exist ####
 #if [ ! -d $destd ]; then
@@ -58,11 +60,11 @@ timestamp=$(date +%F-%H-%M)
 zipfile="$destd/app-logs-$timestamp.zip"
 
 # Find files older than $days
-files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days" -print0)
+files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days" -print 0)
 
 if [ -z "$files_found" ]; then
     echo -e "No files to archive ... $Y SKIPPING $N"
-    exit 0
+    exit 1
 fi
 
 echo "Archiving the following files:"
@@ -70,15 +72,13 @@ echo "$files_found"
 
 
 # Archive logs safely
-if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0 | zip -@ -j "$zipfile" --names-stdin -0; then
+if find "$sourced" -type f -name "*.log" -mtime +"$days" | zip -@ -j "$zipfile" --names-stdin -0; then
     echo -e "Archival ... $G SUCCESS $N"
 
     # Delete original files safely
-    find "$sourced" -type f -name "*.log" -mtime +"$days" -print0 | while IFS= read -r -d '' filepath; do
+    find "$sourced" -type f -name "*.log" -mtime +"$days" | while IFS= read -r -d '' filepath; do
     rm -f "$filepath"
-    echo "Deleted file: $filepath"
     done
-
     echo "All old logs archived and deleted successfully."
 
 else
