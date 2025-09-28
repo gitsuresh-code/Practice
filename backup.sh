@@ -37,7 +37,7 @@ if [ $# -lt 2 ]; then
 fi
 
 
-mkdir -p $logpath
+mkdir -p "$logpath"
 # Ensure destination exists
 mkdir -p "$destd"
 
@@ -64,7 +64,7 @@ timestamp=$(date +%F-%H-%M)
 zipfile="$destd/app-logs-$timestamp.zip"
 
 # Find files older than $days
-files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days" -print0)
+files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days")
 
 if [ -z "$files_found" ]; then
     echo -e "No files to archive ... $Y SKIPPING $N"
@@ -76,11 +76,11 @@ echo "$files_found"
 
 
 # Archive logs safely
-if find "$sourced" -type f -name "*.log" -mtime +"$days" | zip -@ -j "$zipfile" --names-stdin -0; then
+if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0| zip -@ -j "$zipfile" --names-stdin -0; then
     echo -e "Archival ... $G SUCCESS $N"
 
     # Delete original files safely
-    find "$sourced" -type f -name "*.log" -mtime +"$days" | while IFS= read -r -d '' filepath; do
+    find "$sourced" -type f -name "*.log" -mtime +"$days" -print0 | while IFS= read -r -d '' filepath; do
     rm -f "$filepath"
     done
     echo "All old logs archived and deleted successfully."
