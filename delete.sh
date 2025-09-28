@@ -9,7 +9,7 @@ if [ ! -d $path ]; then
 echo "directory doesn't exist"
 fi
 
-filestodelete=$((find . -name "*.log" -type f))
+filestodelete=$((find $path -name "*.log"))
 while IFS=read filepath 
 do 
        echo "Delete the file: $filepath"
