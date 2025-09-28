@@ -64,7 +64,7 @@ timestamp=$(date +%F-%H-%M)
 zipfile="$destd/app-logs-$timestamp.zip"
 
 # Find files older than $days
-files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days" -print 0)
+files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days" -print0)
 
 if [ -z "$files_found" ]; then
     echo -e "No files to archive ... $Y SKIPPING $N"
