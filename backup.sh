@@ -62,7 +62,7 @@ if [ -n "$files" ]; then
     find $sourced -name "*.log" -type f -mtime +$days | zip -@ -j "$zipfile"
 
     ### Check Archieval Success or not ###
-    if [ -f $zipfile ]
+    if [ -f "$zipfile" ]
     then
         echo -e "Archeival ... $G SUCCESS $N"
 
