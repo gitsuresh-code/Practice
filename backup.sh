@@ -18,16 +18,13 @@ logpath="/tmp/shell"
 name=$( echo $0 | cut -d "." -f1 )
 logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
-mkdir -p $logpath
-# Ensure destination exists
-mkdir -p "$destd"
-
 echo "Script started executed at: $(date)" | tee -a $logfile
 
 if [ "$user" -ne 0 ]; then
     echo "ERROR:: Please run this script with root privelege"
     exit 1 # if user is not root. script will end here
 fi
+
 
 usage_instruction(){
     echo -e "$R USAGE:: sudo sh 24-backup.sh <SOURCE_DIR> <DEST_DIR> <DAYS>[optional, default 14 days] $N"
@@ -38,6 +35,13 @@ usage_instruction(){
 if [ $# -lt 2 ]; then
     usage_instruction
 fi
+
+
+mkdir -p $logpath
+# Ensure destination exists
+mkdir -p "$destd"
+
+
 
 
 ### Check SOURCE_DIR Exist ####
