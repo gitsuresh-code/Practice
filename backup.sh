@@ -36,47 +36,58 @@ if [ $# -lt 2 ]; then
     usage_instruction
 fi
 
+
 ### Check SOURCE_DIR Exist ####
 if [ ! -d $sourced ]; then
     echo -e "$R Source $sourced does not exist $N"
     exit 1 #script will end here
 fi
 
+# Ensure destination exists
+mkdir -p "$destd"
+
 ### Check DEST_DIR Exist ####
-if [ ! -d $destd ]; then
-    echo -e "$R Destination $destd does not exist $N"
-    exit 1 #script will end here
+#if [ ! -d $destd ]; then
+#   echo -e "$R Destination $destd does not exist $N"
+#    exit 1 #script will end here
+#fi
+
+
+# Generate timestamped zip filename
+timestamp=$(date +%F-%H-%M)
+zipfile="$destd/app-logs-$timestamp.zip"
+
+# Find files older than $days
+files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days")
+
+if [ -z "$files_found" ]; then
+    echo -e "No files to archive ... $Y SKIPPING $N"
+    exit 0
 fi
 
-### Find the files older than X days ####
+echo "Archiving the following files:"
+echo "$files_found"
 
-files=$(find $sourced -name "*.log" -type f -mtime +$days)
 
-if [ -n "$files" ]; then
-    ### Start Archeiving ###
-    echo "Files found: $files"
-    timestamp=$(date +%F-%H-%M)
-    zipfile="$destd/app-logs-$timestamp.zip"
-    echo "Zip file name: $zipfile"
+# Archive logs safely
+if echo "$files_found" | zip -@ -j "$zipfile"; then
+    echo -e "Archival ... $G SUCCESS $N"
 
-    find $sourced -name "*.log" -type f -mtime +$days | zip -@ -j "$zipfile"
+    # Delete original files safely
+    echo "$files_found" | while IFS= read -r filepath; do
+        if [ -f "$filepath" ]; then
+            echo "Deleting file: $filepath"
+            rm -f "$filepath"
+            echo "Deleted file: $filepath"
+        fi
+    done
 
-    ### Check Archieval Success or not ###
-    if [ -f "$zipfile" ]
-    then
-        echo -e "Archeival ... $G SUCCESS $N"
+    echo "All old logs archived and deleted successfully."
 
-        ### Delete if success ###
-        while IFS= read -r filepath
-        do
-            echo "Deleting the file: $filepath"
-            rm -rf $filepath
-            echo "Deleted the file: $filepath"
-        done <<< $files
-    else
-        echo "Archieval ... $R FAILURE $N"
-        exit 1
-    fi
 else
-    echo -e "No files to archeive ... $Y SKIPPING $N"
+    echo -e "Archival ... $R FAILURE $N"
+    # Remove incomplete zip file if it exists
+    [ -f "$zipfile" ] && rm -f "$zipfile"
+    echo -e "Removing incomplete Archival Files"
+    exit 1
 fi
