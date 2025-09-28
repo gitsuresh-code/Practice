@@ -76,7 +76,7 @@ echo "$files_found"
 
 
 # Archive logs safely
-if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0| zip -@ -j "$zipfile" --names-stdin -0; then
+if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0| zip -@ -j "$zipfile"; then
     echo -e "Archival ... $G SUCCESS $N"
 
     # Delete original files safely
