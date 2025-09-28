@@ -5,7 +5,7 @@ logfile="$path/$file.log"
 
 mkdir -p $path
 
-filepath=$(find . -name "*.log" -type f)
+filepath=$((find . -name "*.log" -type f))
 while IFS=read $filepath 
 do 
        echo "Delete the file: $filepath"
