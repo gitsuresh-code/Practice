@@ -17,7 +17,7 @@ days=${3:-14} # if not provided considered as 14 days
 
 logpath="/tmp/shell-script/backuplogs"
 name=$( echo $0 | cut -d "." -f1 )
-logfile="$logpath/$name.log" # /tmp/shell/backup.log
+logfile="$logpath/$name.log" #/tmp/shell-script/backuplogs/backup.log
 
 mkdir -p "$logpath"
 echo "Script started executed at: $(date)" | tee -a $logfile    
