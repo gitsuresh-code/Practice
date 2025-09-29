@@ -72,6 +72,7 @@ fi
 # Generate timestamped zip filename
 timestamp=$(date +%F-%H-%M)
 zipfile="$destd/app-logs-$timestamp.zip"
+echo "Zipfile is available here: $zipfile"
 
 # Find files older than $days
 files_found=$(find "$sourced" -type f -name "*.log" -mtime +"$days")
@@ -95,7 +96,8 @@ if find "$sourced" -type f -name "*.log" -mtime +"$days" -print0 | xargs -0 zip 
     done
 
     echo "All old logs archived and deleted successfully." | tee -a $logfile
-
+    echo "Zipfile is available here: $zipfile"
+    
 else
     echo -e "Archival ... $R FAILURE $N"
     # Remove incomplete zip file if it exists
