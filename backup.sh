@@ -18,7 +18,10 @@ logpath="/tmp/shell-script/backuplogs"
 name=$( echo $0 | cut -d "." -f1 )
 logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
-echo "Script started executed at: $(date)" 
+mkdir -p "$logpath"
+echo "Script started executed at: $(date)" | tee -a $logfile
+
+
 
 dnf install zip -y &>>$logfile
 if [ $? -ne 0 ]; then
@@ -45,7 +48,7 @@ if [ $# -lt 2 ]; then
 fi
 
 
-mkdir -p "$logpath"
+
 # Ensure destination exists
 mkdir -p "$destd"
 
