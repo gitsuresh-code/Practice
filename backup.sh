@@ -8,6 +8,7 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
+trap 'echo "There is error at Line:$LINENO and for commmand: $BASH_COMMAND"' ERR
 
 sourced=$1 # first argument
 destd=$2   # second argument
@@ -19,7 +20,7 @@ name=$( echo $0 | cut -d "." -f1 )
 logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
 mkdir -p "$logpath"
-echo "Script started executed at: $(date)" | tee -a $logfile
+echo "Script started executed at: $(date)" | tee -a $logfile    
 
 
 
