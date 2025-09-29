@@ -20,6 +20,9 @@ logfile="$logpath/$name.log" # /tmp/shell/backup.log
 
 echo "Script started executed at: $(date)" 
 
+dnf install zip -y
+echo "Installing zip package"
+
 if [ "$user" -ne 0 ]; then
     echo "ERROR:: Please run this script with root privelege"
     exit 1 # if user is not root. script will end here
